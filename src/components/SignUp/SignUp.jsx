@@ -1,23 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import './SignUp.css'
+import "./SignUp.css";
+import { AuthContext } from "../providers/AuthProvider";
 const SignUp = () => {
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const {createUser} = useContext(AuthContext);
   const handleSignUp = (event) => {
-
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
     const confirm = form.confirm.value;
     console.log(email, password, confirm);
-    if(password!=confirm)
-    {
-      setError("Password doesn't match with the confirm password! Please Try Again. ");
-    }else if(password.length<6)
-    {
-      setError("Password length cann't be less than 6! Please try again. ")
+    setError('');
+    if (password != confirm) {
+      setError(
+        "Password doesn't match with the confirm password! Please Try Again. "
+      );
+    } else if (password.length < 6) {
+      setError("Password length cann't be less than 6! Please try again. ");
     }
+
+    createUser(email, password)
+    .then(result =>{
+      const loggedUser = result.user;
+      console.log(loggedUser);
+    })
+    .catch(error=>{
+       console.log(error);
+       setError(error.message);
+    })
+
   };
   return (
     <div>
